@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIxBio 2026 - Judges & Speakers Dashboard</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #232733;
+    --border: #2e3345;
+    --text: #e4e6ed;
+    --text-dim: #8b8fa3;
+    --accent: #6c5ce7;
+    --accent-glow: rgba(108,92,231,0.15);
+    --green: #00b894;
+    --green-bg: rgba(0,184,148,0.12);
+    --red: #e17055;
+    --red-bg: rgba(225,112,85,0.12);
+    --yellow: #fdcb6e;
+    --yellow-bg: rgba(253,203,110,0.12);
+    --blue: #74b9ff;
+    --blue-bg: rgba(116,185,255,0.12);
+    --orange: #e17055;
+    --cyan: #81ecec;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    padding: 32px 40px 24px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(108,92,231,0.06) 0%, transparent 100%);
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .header h1 span { color: var(--accent); }
+  .header-sub {
+    color: var(--text-dim);
+    font-size: 14px;
+    margin-top: 4px;
+  }
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .countdown {
+    font-size: 13px;
+    color: var(--yellow);
+    background: var(--yellow-bg);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  /* Layout */
+  .container { padding: 28px 40px; max-width: 1600px; margin: 0 auto; }
+
+  /* Summary Cards */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--accent); }
+  .card-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-bottom: 8px; }
+  .card-value { font-size: 36px; font-weight: 700; }
+  .card-sub { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+  .card--confirmed .card-value { color: var(--green); }
+  .card--interested .card-value { color: var(--yellow); }
+  .card--noreply .card-value { color: var(--blue); }
+  .card--declined .card-value { color: var(--red); }
+  .card--bio .card-value { color: var(--cyan); }
+  .card-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .card--confirmed .card-bar { background: var(--green); }
+  .card--interested .card-bar { background: var(--yellow); }
+  .card--noreply .card-bar { background: var(--blue); }
+  .card--declined .card-bar { background: var(--red); }
+  .card--bio .card-bar { background: var(--cyan); }
+
+  /* Section */
+  .section { margin-bottom: 32px; }
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::before {
+    content: '';
+    width: 3px;
+    height: 18px;
+    background: var(--accent);
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  /* Two-col layout */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* Pipeline */
+  .pipeline {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .pipe-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 12px;
+  }
+  .pipe-row:last-child { margin-bottom: 0; }
+  .pipe-label { width: 100px; font-size: 13px; color: var(--text-dim); text-align: right; flex-shrink: 0; }
+  .pipe-bar-wrap { flex: 1; height: 28px; background: var(--surface2); border-radius: 6px; overflow: hidden; position: relative; }
+  .pipe-bar {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.8s cubic-bezier(0.22,1,0.36,1);
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+    min-width: fit-content;
+  }
+  .pipe-bar.confirmed { background: linear-gradient(90deg, var(--green), #00d2a0); }
+  .pipe-bar.interested { background: linear-gradient(90deg, var(--yellow), #f9a825); }
+  .pipe-bar.noreply { background: linear-gradient(90deg, var(--blue), #4a9eff); }
+  .pipe-bar.declined { background: linear-gradient(90deg, var(--red), #ff7675); }
+  .pipe-count { width: 40px; font-size: 14px; font-weight: 600; text-align: right; flex-shrink: 0; }
+
+  /* Role breakdown */
+  .role-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .role-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+  }
+  .role-name { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .role-stats { display: flex; gap: 12px; flex-wrap: wrap; }
+  .role-stat {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 500;
+  }
+  .role-stat.s-confirmed { background: var(--green-bg); color: var(--green); }
+  .role-stat.s-interested { background: var(--yellow-bg); color: var(--yellow); }
+  .role-stat.s-noreply { background: var(--blue-bg); color: var(--blue); }
+  .role-stat.s-declined { background: var(--red-bg); color: var(--red); }
+
+  /* Bio tracker */
+  .bio-tracker {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .bio-ring-container {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .bio-ring {
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+  }
+  .bio-ring svg { transform: rotate(-90deg); }
+  .bio-ring-bg { fill: none; stroke: var(--surface2); stroke-width: 8; }
+  .bio-ring-fill { fill: none; stroke: var(--cyan); stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+  .bio-ring-text {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--cyan);
+  }
+  .bio-ring-wrap { position: relative; width: 120px; height: 120px; }
+  .bio-list-missing { flex: 1; }
+  .bio-list-missing h4 { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
+  .bio-missing-item {
+    font-size: 13px;
+    padding: 4px 0;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .bio-missing-item:last-child { border-bottom: none; }
+  .bio-missing-org { color: var(--text-dim); font-size: 12px; }
+
+  /* Org breakdown */
+  .org-chart {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  .org-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .org-name { width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 0; }
+  .org-bar-wrap { flex: 1; height: 20px; background: var(--surface2); border-radius: 4px; overflow: hidden; display: flex; }
+  .org-bar-seg { height: 100%; transition: width 0.6s ease; }
+  .org-bar-seg.confirmed { background: var(--green); }
+  .org-bar-seg.interested { background: var(--yellow); }
+  .org-bar-seg.noreply { background: var(--blue); }
+  .org-bar-seg.declined { background: var(--red); }
+  .org-count { width: 30px; text-align: right; font-weight: 600; flex-shrink: 0; }
+
+
+  /* OOO section */
+  .ooo-list {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .ooo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .ooo-item:last-child { border-bottom: none; }
+  .ooo-date { color: var(--yellow); font-size: 12px; font-weight: 500; }
+
+  /* Filters + Table */
+  .controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .search-input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    color: var(--text);
+    font-size: 14px;
+    width: 280px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--text-dim); }
+  .filter-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 16px;
+    color: var(--text-dim);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+  .filter-btn.active { background: var(--accent-glow); border-color: var(--accent); color: var(--accent); }
+
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-dim);
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  thead th:hover { color: var(--text); }
+  thead th .sort-arrow { margin-left: 4px; opacity: 0.4; }
+  thead th.sorted .sort-arrow { opacity: 1; color: var(--accent); }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  tbody tr:hover { background: var(--surface2); }
+  tbody tr:last-child { border-bottom: none; }
+  td {
+    padding: 10px 16px;
+    font-size: 13px;
+    vertical-align: middle;
+  }
+  td.name-cell { font-weight: 500; }
+  td.affil-cell { max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-confirmed { background: var(--green-bg); color: var(--green); }
+  .badge-interested { background: var(--yellow-bg); color: var(--yellow); }
+  .badge-noreply { background: var(--blue-bg); color: var(--blue); }
+  .badge-declined { background: var(--red-bg); color: var(--red); }
+
+  .badge-role {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--surface2);
+    color: var(--text-dim);
+  }
+  .badge-role.keynote { background: rgba(108,92,231,0.15); color: var(--accent); }
+  .badge-role.speaker { background: rgba(129,236,236,0.12); color: var(--cyan); }
+  .badge-role.judge { background: var(--surface2); color: var(--text-dim); }
+  .badge-role.both { background: rgba(253,203,110,0.12); color: var(--yellow); }
+
+  .bio-check { color: var(--green); }
+  .bio-missing { color: var(--red); opacity: 0.6; }
+
+  .table-footer {
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--text-dim);
+    border-top: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+  /* Tooltip */
+  .tooltip-wrap { position: relative; }
+  .tooltip-wrap:hover .tooltip { opacity: 1; pointer-events: auto; transform: translateY(0); }
+  .tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s;
+    z-index: 10;
+  }
+
+  @media (max-width: 768px) {
+    .header, .container { padding-left: 16px; padding-right: 16px; }
+    .cards { grid-template-columns: repeat(2, 1fr); }
+    .search-input { width: 100%; }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-row">
+    <div>
+      <h1><span>AIxBio</span> 2026 Judges & Speakers</h1>
+      <div class="header-sub">Recruitment pipeline tracker &middot; Updated Apr 8, 2026</div>
+    </div>
+    <div class="countdown">T-17 days to hackathon</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Summary Cards -->
+  <div class="cards" id="summaryCards"></div>
+
+  <!-- Pipeline + Bio Tracker -->
+  <div class="grid-2 section">
+    <div>
+      <div class="section-title">Recruitment Pipeline</div>
+      <div class="pipeline" id="pipeline"></div>
+    </div>
+    <div>
+      <div class="section-title">Headshot & Bio Collection</div>
+      <div class="bio-tracker" id="bioTracker"></div>
+    </div>
+  </div>
+
+  <!-- Role Breakdown -->
+  <div class="section">
+    <div class="section-title">By Role</div>
+    <div class="role-grid" id="roleGrid"></div>
+  </div>
+
+  <!-- Contacted By + OOO -->
+  <div class="grid-2 section">
+    <div></div>
+    <div>
+      <div class="section-title">Currently Out of Office</div>
+      <div class="ooo-list" id="oooList"></div>
+    </div>
+  </div>
+
+  <!-- Top Orgs -->
+  <div class="section">
+    <div class="section-title">Top Organizations</div>
+    <div class="org-chart" id="orgChart"></div>
+  </div>
+
+  <!-- Full Table -->
+  <div class="section">
+    <div class="section-title">All Contacts</div>
+    <div class="controls" id="controls"></div>
+    <div class="table-wrap">
+      <table>
+        <thead id="tableHead"></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div class="table-footer" id="tableFooter"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const DATA = [
+  {name:"Kevin Esvelt",affiliation:"MIT",role:"Keynote Speaker",status:"Confirmed",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Oliver Crook",affiliation:"University of Oxford, Kavli Institute",role:"Keynote Speaker",status:"Confirmed",contactedBy:"Grace",bio:false,ooo:""},
+  {name:"James Black",affiliation:"BlueDot Impact",role:"Speaker",status:"Confirmed",contactedBy:"Jason",bio:false,ooo:""},
+  {name:"Cassidy Nelson",affiliation:"Centre for Long-Term Resilience (CLTR)",role:"Speaker",status:"Confirmed",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Steph Guerra",affiliation:"RAND",role:"Speaker",status:"Confirmed",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Jasper Goetting",affiliation:"SecureBio",role:"Speaker + Judge",status:"Confirmed",contactedBy:"Jason",bio:true,ooo:""},
+  {name:"Adam Howes",affiliation:"",role:"Judge",status:"Confirmed",contactedBy:"Grace",bio:true,ooo:""},
+  {name:"Alex Norman",affiliation:"",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
+  {name:"Benjamin Fefferman",affiliation:"AIxBio Research Fellowship / Harvard",role:"Judge",status:"Confirmed",contactedBy:"Grace",bio:false,ooo:""},
+  {name:"Bryan Tegomoh",affiliation:"UC Berkeley",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
+  {name:"Chris Stamper",affiliation:"Karolinska Institutet / Independent Biosecurity Researcher",role:"Judge",status:"Confirmed",contactedBy:"Grace",bio:true,ooo:""},
+  {name:"Elise Racine",affiliation:"MATS; University of Oxford",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
+  {name:"Hanna Palya",affiliation:"",role:"Judge",status:"Confirmed",contactedBy:"Grace",bio:false,ooo:""},
+  {name:"Hayley Severance",affiliation:"Nuclear Threat Initiative (NTI)",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
+  {name:"Ian Beatty",affiliation:"AIxBio Research Fellowship / UNC Greensboro",role:"Judge",status:"Confirmed",contactedBy:"Grace",bio:true,ooo:""},
+  {name:"Jack Douglass",affiliation:"SecureBio / University of Arizona",role:"Judge",status:"Confirmed",contactedBy:"Grace",bio:true,ooo:""},
+  {name:"Joey Bream",affiliation:"Sentinel Bio",role:"Judge",status:"Confirmed",contactedBy:"Jaime",bio:true,ooo:""},
+  {name:"John Wang",affiliation:"Harvard",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
+  {name:"Keri Warr",affiliation:"Anthropic (Security Engineering)",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
+  {name:"Kevin Flyangolts",affiliation:"Aclid",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
+  {name:"Laura Bailey",affiliation:"University of Oxford",role:"Judge",status:"Confirmed",contactedBy:"Grace",bio:true,ooo:""},
+  {name:"Lee M. Wall",affiliation:"Data Scientist at Battelle",role:"Judge",status:"Confirmed",contactedBy:"Grace",bio:true,ooo:""},
+  {name:"Lennart Justen",affiliation:"MIT Media Lab & Broad Institute / AIxBio Research Fellowship",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
+  {name:"Lucas Boldrini",affiliation:"IBBIS",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
+  {name:"Max Görlitz",affiliation:"",role:"Judge",status:"Confirmed",contactedBy:"Grace",bio:true,ooo:""},
+  {name:"Nelly Mak",affiliation:"SecureBio",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
+  {name:"P. T. Nhean",affiliation:"AI Safety Asia",role:"Judge",status:"Confirmed",contactedBy:"Jaime",bio:true,ooo:""},
+  {name:"Ramanpreet Singh Khinda",affiliation:"LinkedIn (Staff Software Engineer)",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
+  {name:"Rocco Casagrande",affiliation:"Deloitte Consulting (formerly Gryphon Scientific)",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
+  {name:"Zachary Kallenborn",affiliation:"King's College London; CSIS; Schar School",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
+  {name:"Zuzanna Matuszewska",affiliation:"",role:"Judge",status:"Confirmed",contactedBy:"Grace",bio:true,ooo:""},
+  {name:"Stephen Turner",affiliation:"University of Virginia School of Data Science",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Andrew Liu",affiliation:"SecureBio; MIT",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
+  {name:"Elian Belot",affiliation:"Serova Bio",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Gary Ackerman",affiliation:"Nemesys Insights / Frontier Design Group",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"J.T. O'Brien",affiliation:"Bipartisan Commission on Biodefense; University of Oxford",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
+  {name:"Anthony Torres-Ruesta",affiliation:"Centre for the Study of Existential Risk (CSER), Cambridge",role:"Judge",status:"Declined",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Alex Kleinman",affiliation:"Panoplia Laboratories / Active Site Research",role:"Judge",status:"Declined",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Asha George",affiliation:"Bipartisan Commission on Biodefense (Executive Director)",role:"Judge",status:"Declined",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Helena Cozzarini",affiliation:"SecureDNA; GovAI",role:"Judge",status:"Declined",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Paul-Enguerrand Fady",affiliation:"Centre for Long-Term Resilience (CLTR)",role:"Judge",status:"Declined",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Luca Righetti",affiliation:"GovAI / METR",role:"Judge",status:"Declined",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Caitlin Rivers",affiliation:"Johns Hopkins Center for Health Security",role:"Judge",status:"Declined",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Filippa Lentzos",affiliation:"King's College London",role:"Judge",status:"Declined",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Matthew Shearer",affiliation:"Johns Hopkins Center for Health Security",role:"Judge",status:"Declined",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Mike McLaren",affiliation:"SecureBio; MIT Sculpting Evolution",role:"Judge",status:"Declined",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Christine Parthemore",affiliation:"Council on Strategic Risks / SecureBio Board",role:"Judge",status:"Interested",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Evan Fields",affiliation:"SecureBio",role:"Judge",status:"Interested",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Jake Swett",affiliation:"Blueprint Biosecurity",role:"Judge",status:"Interested",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Rachel Staley Grant",affiliation:"Nuclear Threat Initiative (NTI)",role:"Judge",status:"Interested",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Jonas Sandbrink",affiliation:"UK AI Safety Institute (DSIT)",role:"Speaker + Judge",status:"Interested",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Jaime Yassif",affiliation:"NTI bio",role:"Keynote Speaker",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Gene Olinger",affiliation:"University of Texas Medical Branch, Galveston National Laboratory",role:"Speaker",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Gigi Gronvall",affiliation:"Johns Hopkins Bloomberg School of Public Health / Center for Health Security",role:"Speaker",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Jassi Pannu",affiliation:"Johns Hopkins Center for Health Security",role:"Speaker",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Jeff Kaufman",affiliation:"SecureBio (formerly Nucleic Acid Observatory)",role:"Speaker",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Max Langenkamp",affiliation:"SecureDNA Foundation",role:"Speaker",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Brian Wang",affiliation:"ARIA; formerly Panoplia Labs / SecureDNA",role:"Speaker",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Coleman Breen",affiliation:"SecureBio",role:"Speaker",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Dana Gretton",affiliation:"MIT Media Lab / SecureDNA",role:"Speaker",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Todd Kuiken",affiliation:"Congressional Research Service (formerly NC State GES Center)",role:"Speaker",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Will Bradshaw",affiliation:"SecureBio",role:"Speaker",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Richard Moulange",affiliation:"Centre for Long-Term Resilience (CLTR)",role:"Speaker + Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Eleanor Marshall",affiliation:"SecureBio",role:"Speaker + Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Tessa Alexanian",affiliation:"IBBIS (International Biosecurity and Biosafety Initiative for Science)",role:"Speaker + Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Adeline Williams",affiliation:"RAND Corporation",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Andrew Snyder-Beattie",affiliation:"Coefficient Giving",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Andy Morgan",affiliation:"Ministry of Business, Innovation and Employment (MBIE), New Zealand",role:"Judge",status:"No Reply",contactedBy:"Grace",bio:false,ooo:""},
+  {name:"Anita Cicero",affiliation:"Johns Hopkins Center for Health Security",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Annabella Wheatley",affiliation:"ERA Cambridge",role:"Judge",status:"No Reply",contactedBy:"Grace",bio:false,ooo:""},
+  {name:"Aurelia Attal-Juncqua",affiliation:"RAND Corporation",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Barbara Del Castello",affiliation:"RAND Corporation",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Catherine Dill",affiliation:"Council on Strategic Risks, Nolan Center",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Charles Whittaker",affiliation:"UC Berkeley School of Public Health",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Chris Bakerlee",affiliation:"Coefficient Giving",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Chris Doering",affiliation:"SecureBio",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Chris Isaac",affiliation:"Nuclear Threat Initiative (former)",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Christopher East",affiliation:"Council on Strategic Risks, Nolan Center",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Christopher Rodriguez",affiliation:"RAND Corporation",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Claire Standley",affiliation:"Georgetown University",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:"OOO until apr13"},
+  {name:"Conor McGurk",affiliation:"Coefficient Giving",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Dan Greene",affiliation:"Stanford CISAC / Mirror Biology Dialogues Fund (formerly Gryphon Scientific)",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Dan Rice",affiliation:"SecureBio; MIT Sculpting Evolution",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Doni Bloomfield",affiliation:"Johns Hopkins Bloomberg School of Public Health",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Elias Nehring",affiliation:"ETH Zurich",role:"Judge",status:"No Reply",contactedBy:"Grace",bio:false,ooo:""},
+  {name:"Ellie Graeden",affiliation:"Georgetown University; Talus Analytics (CEO)",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Emily Billings",affiliation:"Gryphon Scientific (Deloitte)",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Emma Chory",affiliation:"Duke University; SecureDNA Advisor",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Eric Toner",affiliation:"Johns Hopkins Center for Health Security",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:"OOO until apr10"},
+  {name:"Erika DeBenedictis",affiliation:"Francis Crick Institute; SecureDNA Academic Advisor",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Eva Siegmann",affiliation:"Council on Strategic Risks",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Gabrielle Essix",affiliation:"Nuclear Threat Initiative (NTI)",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Gerald Epstein",affiliation:"RAND Corporation; Johns Hopkins CHS",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Harris H. Wang",affiliation:"Columbia University; Aclid (Scientific Founder)",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Heather Swadley",affiliation:"Georgetown University",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"James Smith",affiliation:"CLTR Biosecurity Policy Unit",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"James Wagstaff",affiliation:"Coefficient Giving",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Jay Atanda",affiliation:"RAND Corporation (Meselson Center)",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Julie Fischer",affiliation:"Georgetown University",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Katherine Stansifer",affiliation:"SecureBio",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Kathryn Myers",affiliation:"Stanford University",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Katie Dammer",affiliation:"RAND Corporation; George Mason University",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Kemper Talley",affiliation:"Johns Hopkins Center for Health Security",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Kenneth Oye",affiliation:"MIT; SecureDNA Advisor",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Kirsten Engel",affiliation:"SecureDNA Foundation",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Leonard Foner",affiliation:"SecureDNA; MIT Media Lab",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Matt Sharkey",affiliation:"RAND Corporation; Georgetown University Medical Center",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Matthew Nicotra",affiliation:"RAND Corporation",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Megan Palmer",affiliation:"Stanford University / ARPA-H",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Moritz Hanke",affiliation:"Johns Hopkins CHS / Council on Strategic Risks",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Nancy Connell",affiliation:"Rutgers NJMS / NASEM / CSER affiliate",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Neeraj Rao",affiliation:"Turbine; former Battelle Sr Director; Aclid advisor",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Olivia Hershey",affiliation:"SecureBio",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Pedro Medeiros",affiliation:"SecureBio",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Perla Medrano",affiliation:"Duke Global Health Institute",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Peter Dykstra",affiliation:"Stanford University",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Peter Peneder",affiliation:"SecureBio; Pivotal Research",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Piers Millett",affiliation:"IBBIS",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:"OOO until apr07"},
+  {name:"Raj Panjabi",affiliation:"Flagship Pioneering; Commissioner, Bipartisan Commission on Biodefense",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Rassin Lababidi",affiliation:"IBBIS / Council on Strategic Risks",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:"OOO until apr09"},
+  {name:"Rebecca Chandler-Bostock",affiliation:"University of Leeds / ERA Cambridge",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Rebecca Katz",affiliation:"Georgetown University",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Rebecca Zanini",affiliation:"",role:"Judge",status:"No Reply",contactedBy:"Grace",bio:false,ooo:""},
+  {name:"Richard Williamson",affiliation:"Blueprint Biosecurity",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Robert Bradley",affiliation:"Bipartisan Commission on Biodefense (Atlantic Council)",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Sahil V. Shah",affiliation:"Council on Strategic Risks, Nolan Center",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Samuel Scarpino",affiliation:"Northeastern University",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Sana Zakaria",affiliation:"RAND Europe",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:"OOO until apr14"},
+  {name:"Sophie Kim",affiliation:"Stanford University",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Sophie Peresson",affiliation:"IBBIS",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:"OOO until apr07"},
+  {name:"Steve Martin",affiliation:"Blueprint Biosecurity",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Tara Kirk Sell",affiliation:"Johns Hopkins Center for Health Security",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:"OOO until apr10"},
+  {name:"Tina Wunn",affiliation:"",role:"Judge",status:"No Reply",contactedBy:"Grace",bio:false,ooo:""},
+  {name:"Todd Peterson",affiliation:"GenApex Bio; former CTO Synthetic Genomics; ex-IGSC Board Chair",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Tom Inglesby",affiliation:"Johns Hopkins Center for Health Security",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""}
+];
+
+// ========== HELPERS ==========
+function count(arr, fn) { return arr.filter(fn).length; }
+function statusClass(s) {
+  if (s === 'Confirmed') return 'confirmed';
+  if (s === 'Interested') return 'interested';
+  if (s === 'No Reply') return 'noreply';
+  if (s === 'Declined') return 'declined';
+  return '';
+}
+function roleClass(r) {
+  if (r.includes('Keynote')) return 'keynote';
+  if (r === 'Speaker + Judge') return 'both';
+  if (r === 'Speaker') return 'speaker';
+  return 'judge';
+}
+
+// ========== SUMMARY CARDS ==========
+function renderCards() {
+  const total = DATA.length;
+  const confirmed = count(DATA, d => d.status === 'Confirmed');
+  const interested = count(DATA, d => d.status === 'Interested');
+  const noreply = count(DATA, d => d.status === 'No Reply');
+  const declined = count(DATA, d => d.status === 'Declined');
+  const biosDone = count(DATA, d => d.bio && d.status === 'Confirmed');
+  const biosNeeded = confirmed;
+
+  document.getElementById('summaryCards').innerHTML = `
+    <div class="card"><div class="card-label">Total Contacts</div><div class="card-value">${total}</div><div class="card-sub">${confirmed} confirmed of ${total} contacted</div></div>
+    <div class="card card--confirmed"><div class="card-label">Confirmed</div><div class="card-value">${confirmed}</div><div class="card-sub">${Math.round(confirmed/total*100)}% conversion rate</div><div class="card-bar"></div></div>
+    <div class="card card--interested"><div class="card-label">Interested</div><div class="card-value">${interested}</div><div class="card-sub">Needs follow-up</div><div class="card-bar"></div></div>
+    <div class="card card--noreply"><div class="card-label">No Reply</div><div class="card-value">${noreply}</div><div class="card-sub">${Math.round(noreply/total*100)}% of outreach</div><div class="card-bar"></div></div>
+    <div class="card card--declined"><div class="card-label">Declined</div><div class="card-value">${declined}</div><div class="card-sub">${Math.round(declined/total*100)}% decline rate</div><div class="card-bar"></div></div>
+    <div class="card card--bio"><div class="card-label">Bios Collected</div><div class="card-value">${biosDone}/${biosNeeded}</div><div class="card-sub">${biosNeeded - biosDone} still needed from confirmed</div><div class="card-bar"></div></div>
+  `;
+}
+
+// ========== PIPELINE ==========
+function renderPipeline() {
+  const statuses = ['Confirmed','Interested','No Reply','Declined'];
+  const counts = statuses.map(s => count(DATA, d => d.status === s));
+  const max = Math.max(...counts);
+  const el = document.getElementById('pipeline');
+  el.innerHTML = statuses.map((s, i) => `
+    <div class="pipe-row">
+      <div class="pipe-label">${s}</div>
+      <div class="pipe-bar-wrap">
+        <div class="pipe-bar ${statusClass(s)}" style="width:${Math.max(counts[i]/max*100,8)}%">${counts[i]}</div>
+      </div>
+      <div class="pipe-count">${counts[i]}</div>
+    </div>
+  `).join('');
+}
+
+// ========== BIO TRACKER ==========
+function renderBioTracker() {
+  const confirmed = DATA.filter(d => d.status === 'Confirmed');
+  const done = count(confirmed, d => d.bio);
+  const total = confirmed.length;
+  const pct = Math.round(done/total*100);
+  const missing = confirmed.filter(d => !d.bio);
+
+  const circumference = 2 * Math.PI * 48;
+  const offset = circumference - (pct/100) * circumference;
+
+  document.getElementById('bioTracker').innerHTML = `
+    <div class="bio-ring-container">
+      <div class="bio-ring-wrap">
+        <svg class="bio-ring" viewBox="0 0 120 120">
+          <circle class="bio-ring-bg" cx="60" cy="60" r="48"/>
+          <circle class="bio-ring-fill" cx="60" cy="60" r="48" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"/>
+        </svg>
+        <div class="bio-ring-text">${pct}%</div>
+      </div>
+      <div class="bio-list-missing">
+        <h4>Missing from confirmed (${missing.length})</h4>
+        ${missing.map(d => `
+          <div class="bio-missing-item">
+            <span>${d.name}</span>
+            <span class="bio-missing-org">${d.affiliation || 'No affiliation'}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// ========== ROLE BREAKDOWN ==========
+function renderRoles() {
+  const roles = ['Keynote Speaker','Speaker','Speaker + Judge','Judge'];
+  const el = document.getElementById('roleGrid');
+  el.innerHTML = roles.map(r => {
+    const items = DATA.filter(d => d.role === r);
+    const conf = count(items, d => d.status === 'Confirmed');
+    const inte = count(items, d => d.status === 'Interested');
+    const nr = count(items, d => d.status === 'No Reply');
+    const dec = count(items, d => d.status === 'Declined');
+    return `
+      <div class="role-card">
+        <div class="role-name">${r} (${items.length})</div>
+        <div class="role-stats">
+          ${conf ? `<span class="role-stat s-confirmed">${conf} confirmed</span>` : ''}
+          ${inte ? `<span class="role-stat s-interested">${inte} interested</span>` : ''}
+          ${nr ? `<span class="role-stat s-noreply">${nr} no reply</span>` : ''}
+          ${dec ? `<span class="role-stat s-declined">${dec} declined</span>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+
+// ========== OOO ==========
+function renderOOO() {
+  const ooo = DATA.filter(d => d.ooo);
+  const el = document.getElementById('oooList');
+  if (!ooo.length) { el.innerHTML = '<div style="color:var(--text-dim);font-size:13px">No one currently OOO</div>'; return; }
+  el.innerHTML = ooo.map(d => `
+    <div class="ooo-item">
+      <div>
+        <strong>${d.name}</strong>
+        <span style="color:var(--text-dim);margin-left:8px;font-size:12px">${d.affiliation}</span>
+      </div>
+      <div class="ooo-date">${d.ooo}</div>
+    </div>
+  `).join('');
+}
+
+// ========== ORG CHART ==========
+function renderOrgs() {
+  const orgs = {};
+  DATA.forEach(d => {
+    if (!d.affiliation) return;
+    // Normalize org: take first part before ;/,
+    let org = d.affiliation.split(';')[0].split('/')[0].trim();
+    if (org.includes('(') && !org.startsWith('(')) org = org.split('(')[0].trim();
+    if (!orgs[org]) orgs[org] = {confirmed:0,interested:0,noreply:0,declined:0,total:0};
+    orgs[org][statusClass(d.status)]++;
+    orgs[org].total++;
+  });
+  const sorted = Object.entries(orgs).filter(([,v]) => v.total >= 2).sort((a,b) => b[1].total - a[1].total);
+  const max = sorted.length ? sorted[0][1].total : 1;
+  const el = document.getElementById('orgChart');
+  el.innerHTML = sorted.map(([org, c]) => {
+    const w = (n) => (n/max*100) + '%';
+    return `
+      <div class="org-row">
+        <div class="org-name" title="${org}">${org}</div>
+        <div class="org-bar-wrap">
+          ${c.confirmed ? `<div class="org-bar-seg confirmed" style="width:${w(c.confirmed)}" title="${c.confirmed} confirmed"></div>` : ''}
+          ${c.interested ? `<div class="org-bar-seg interested" style="width:${w(c.interested)}" title="${c.interested} interested"></div>` : ''}
+          ${c.noreply ? `<div class="org-bar-seg noreply" style="width:${w(c.noreply)}" title="${c.noreply} no reply"></div>` : ''}
+          ${c.declined ? `<div class="org-bar-seg declined" style="width:${w(c.declined)}" title="${c.declined} declined"></div>` : ''}
+        </div>
+        <div class="org-count">${c.total}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ========== TABLE ==========
+let currentFilter = 'All';
+let currentRoleFilter = 'All';
+let searchQuery = '';
+let sortCol = 'name';
+let sortDir = 1;
+
+function renderControls() {
+  const statuses = ['All','Confirmed','Interested','No Reply','Declined'];
+  const roles = ['All','Keynote Speaker','Speaker','Speaker + Judge','Judge'];
+  document.getElementById('controls').innerHTML = `
+    <input class="search-input" placeholder="Search by name or organization..." oninput="searchQuery=this.value;renderTable()">
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      ${statuses.map(s => `<button class="filter-btn ${currentFilter===s?'active':''}" onclick="currentFilter='${s}';document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active');renderTable()">${s}</button>`).join('')}
+    </div>
+    <select style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 12px;color:var(--text);font-size:13px;font-family:inherit;cursor:pointer" onchange="currentRoleFilter=this.value;renderTable()">
+      ${roles.map(r => `<option value="${r}" ${currentRoleFilter===r?'selected':''}>${r === 'All' ? 'All Roles' : r}</option>`).join('')}
+    </select>
+  `;
+}
+
+function renderTable() {
+  let filtered = DATA.filter(d => {
+    if (currentFilter !== 'All' && d.status !== currentFilter) return false;
+    if (currentRoleFilter !== 'All' && d.role !== currentRoleFilter) return false;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      return d.name.toLowerCase().includes(q) || d.affiliation.toLowerCase().includes(q);
+    }
+    return true;
+  });
+
+  filtered.sort((a, b) => {
+    let va = a[sortCol] || '';
+    let vb = b[sortCol] || '';
+    if (sortCol === 'bio') { va = a.bio ? 1 : 0; vb = b.bio ? 1 : 0; }
+    if (typeof va === 'string') { va = va.toLowerCase(); vb = vb.toLowerCase(); }
+    if (va < vb) return -1 * sortDir;
+    if (va > vb) return 1 * sortDir;
+    return 0;
+  });
+
+  const cols = [
+    {key:'name',label:'Name'},
+
+    {key:'affiliation',label:'Affiliation'},
+    {key:'role',label:'Role'},
+    {key:'status',label:'Status'},
+    {key:'bio',label:'Bio'},
+  ];
+
+  document.getElementById('tableHead').innerHTML = `<tr>${cols.map(c =>
+    `<th class="${sortCol===c.key?'sorted':''}" onclick="if(sortCol==='${c.key}'){sortDir*=-1}else{sortCol='${c.key}';sortDir=1};renderTable()">
+      ${c.label}<span class="sort-arrow">${sortCol===c.key?(sortDir===1?'&#9650;':'&#9660;'):'&#9650;'}</span>
+    </th>`
+  ).join('')}</tr>`;
+
+  document.getElementById('tableBody').innerHTML = filtered.map(d => `
+    <tr>
+      <td class="name-cell">${d.name}</td>
+
+      <td class="affil-cell" title="${d.affiliation}">${d.affiliation || '<span style="opacity:0.3">-</span>'}</td>
+      <td><span class="badge-role ${roleClass(d.role)}">${d.role}</span></td>
+      <td><span class="badge badge-${statusClass(d.status)}">${d.status}</span></td>
+      <td>${d.bio ? '<span class="bio-check">&#10003;</span>' : '<span class="bio-missing">&#10007;</span>'}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('tableFooter').textContent = `Showing ${filtered.length} of ${DATA.length} contacts`;
+}
+
+// ========== INIT ==========
+renderCards();
+renderPipeline();
+renderBioTracker();
+renderRoles();
+renderOOO();
+renderOrgs();
+renderControls();
+renderTable();
+</script>
+</body>
+</html>
