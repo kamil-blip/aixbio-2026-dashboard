@@ -424,9 +424,9 @@
   <div class="header-row">
     <div>
       <h1><span>AIxBio</span> 2026 Judges & Speakers</h1>
-      <div class="header-sub">Recruitment pipeline tracker &middot; Updated Apr 8, 2026</div>
+      <div class="header-sub">Recruitment pipeline tracker &middot; Updated Apr 9, 2026</div>
     </div>
-    <div class="countdown">T-17 days to hackathon</div>
+    <div class="countdown">T-15 days to hackathon</div>
   </div>
 </div>
 
@@ -441,6 +441,10 @@
       <div class="section-title">Recruitment Pipeline</div>
       <div class="pipeline" id="pipeline"></div>
     </div>
+    <div>
+      <div class="section-title">Headshot & Bio Collection</div>
+      <div class="bio-tracker" id="bioTracker"></div>
+    </div>
   </div>
 
   <!-- Role Breakdown -->
@@ -451,10 +455,7 @@
 
   <!-- Contacted By + OOO -->
   <div class="grid-2 section">
-    <div>
-      <div class="section-title">Headshot & Bio Collection</div>
-      <div class="bio-tracker" id="bioTracker"></div>
-    </div>
+    <div></div>
     <div>
       <div class="section-title">Currently Out of Office</div>
       <div class="ooo-list" id="oooList"></div>
@@ -486,7 +487,7 @@
 const DATA = [
   {name:"Kevin Esvelt",affiliation:"MIT",role:"Keynote Speaker",status:"Confirmed",contactedBy:"Kamil",bio:false,ooo:""},
   {name:"Oliver Crook",affiliation:"University of Oxford, Kavli Institute",role:"Keynote Speaker",status:"Confirmed",contactedBy:"Grace",bio:false,ooo:""},
-  {name:"James Black",affiliation:"BlueDot Impact",role:"Speaker",status:"Confirmed",contactedBy:"Jason",bio:false,ooo:""},
+  {name:"James Black",affiliation:"BlueDot Impact",role:"Speaker",status:"Interested",contactedBy:"Jason",bio:false,ooo:""},
   {name:"Cassidy Nelson",affiliation:"Centre for Long-Term Resilience (CLTR)",role:"Speaker",status:"Confirmed",contactedBy:"Kamil",bio:false,ooo:""},
   {name:"Steph Guerra",affiliation:"RAND",role:"Speaker",status:"Confirmed",contactedBy:"Kamil",bio:false,ooo:""},
   {name:"Jasper Goetting",affiliation:"SecureBio",role:"Speaker + Judge",status:"Confirmed",contactedBy:"Jason",bio:true,ooo:""},
@@ -517,7 +518,7 @@ const DATA = [
   {name:"Zuzanna Matuszewska",affiliation:"",role:"Judge",status:"Confirmed",contactedBy:"Grace",bio:true,ooo:""},
   {name:"Stephen Turner",affiliation:"University of Virginia School of Data Science",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:false,ooo:""},
   {name:"Andrew Liu",affiliation:"SecureBio; MIT",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
-  {name:"Elian Belot",affiliation:"Serova Bio",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:false,ooo:""},
+  {name:"Elian Belot",affiliation:"Serova Bio",role:"Judge + Mentor",status:"Confirmed",contactedBy:"Kamil",bio:false,ooo:""},
   {name:"Gary Ackerman",affiliation:"Nemesys Insights / Frontier Design Group",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:false,ooo:""},
   {name:"J.T. O'Brien",affiliation:"Bipartisan Commission on Biodefense; University of Oxford",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
   {name:"Anthony Torres-Ruesta",affiliation:"Centre for the Study of Existential Risk (CSER), Cambridge",role:"Judge",status:"Declined",contactedBy:"Kamil",bio:false,ooo:""},
@@ -601,9 +602,9 @@ const DATA = [
   {name:"Perla Medrano",affiliation:"Duke Global Health Institute",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
   {name:"Peter Dykstra",affiliation:"Stanford University",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
   {name:"Peter Peneder",affiliation:"SecureBio; Pivotal Research",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
-  {name:"Piers Millett",affiliation:"IBBIS",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:"OOO until apr07"},
+  {name:"Piers Millett",affiliation:"IBBIS",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
   {name:"Raj Panjabi",affiliation:"Flagship Pioneering; Commissioner, Bipartisan Commission on Biodefense",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
-  {name:"Rassin Lababidi",affiliation:"IBBIS / Council on Strategic Risks",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:"OOO until apr09"},
+  {name:"Rassin Lababidi",affiliation:"IBBIS / Council on Strategic Risks",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
   {name:"Rebecca Chandler-Bostock",affiliation:"University of Leeds / ERA Cambridge",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
   {name:"Rebecca Katz",affiliation:"Georgetown University",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
   {name:"Rebecca Zanini",affiliation:"",role:"Judge",status:"No Reply",contactedBy:"Grace",bio:false,ooo:""},
@@ -613,7 +614,7 @@ const DATA = [
   {name:"Samuel Scarpino",affiliation:"Northeastern University",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
   {name:"Sana Zakaria",affiliation:"RAND Europe",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:"OOO until apr14"},
   {name:"Sophie Kim",affiliation:"Stanford University",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
-  {name:"Sophie Peresson",affiliation:"IBBIS",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:"OOO until apr07"},
+  {name:"Sophie Peresson",affiliation:"IBBIS",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
   {name:"Steve Martin",affiliation:"Blueprint Biosecurity",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:""},
   {name:"Tara Kirk Sell",affiliation:"Johns Hopkins Center for Health Security",role:"Judge",status:"No Reply",contactedBy:"Kamil",bio:false,ooo:"OOO until apr10"},
   {name:"Tina Wunn",affiliation:"",role:"Judge",status:"No Reply",contactedBy:"Grace",bio:false,ooo:""},
@@ -634,6 +635,7 @@ function roleClass(r) {
   if (r.includes('Keynote')) return 'keynote';
   if (r === 'Speaker + Judge') return 'both';
   if (r === 'Speaker') return 'speaker';
+  if (r === 'Judge + Mentor') return 'both';
   return 'judge';
 }
 
@@ -709,7 +711,7 @@ function renderBioTracker() {
 
 // ========== ROLE BREAKDOWN ==========
 function renderRoles() {
-  const roles = ['Keynote Speaker','Speaker','Speaker + Judge','Judge'];
+  const roles = ['Keynote Speaker','Speaker','Speaker + Judge','Judge','Judge + Mentor'];
   const el = document.getElementById('roleGrid');
   el.innerHTML = roles.map(r => {
     const items = DATA.filter(d => d.role === r);
@@ -789,7 +791,7 @@ let sortDir = 1;
 
 function renderControls() {
   const statuses = ['All','Confirmed','Interested','No Reply','Declined'];
-  const roles = ['All','Keynote Speaker','Speaker','Speaker + Judge','Judge'];
+  const roles = ['All','Keynote Speaker','Speaker','Speaker + Judge','Judge','Judge + Mentor'];
   document.getElementById('controls').innerHTML = `
     <input class="search-input" placeholder="Search by name or organization..." oninput="searchQuery=this.value;renderTable()">
     <div style="display:flex;gap:6px;flex-wrap:wrap">
@@ -824,10 +826,10 @@ function renderTable() {
 
   const cols = [
     {key:'name',label:'Name'},
-
     {key:'affiliation',label:'Affiliation'},
     {key:'role',label:'Role'},
     {key:'status',label:'Status'},
+    {key:'contactedBy',label:'Contacted By'},
     {key:'bio',label:'Bio'},
   ];
 
@@ -840,10 +842,10 @@ function renderTable() {
   document.getElementById('tableBody').innerHTML = filtered.map(d => `
     <tr>
       <td class="name-cell">${d.name}</td>
-
       <td class="affil-cell" title="${d.affiliation}">${d.affiliation || '<span style="opacity:0.3">-</span>'}</td>
       <td><span class="badge-role ${roleClass(d.role)}">${d.role}</span></td>
       <td><span class="badge badge-${statusClass(d.status)}">${d.status}</span></td>
+      <td style="font-size:12px;color:var(--text-dim)">${d.contactedBy || '-'}</td>
       <td>${d.bio ? '<span class="bio-check">&#10003;</span>' : '<span class="bio-missing">&#10007;</span>'}</td>
     </tr>
   `).join('');
