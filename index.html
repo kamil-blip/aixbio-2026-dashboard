@@ -453,15 +453,6 @@
     <div class="role-grid" id="roleGrid"></div>
   </div>
 
-  <!-- Contacted By + OOO -->
-  <div class="grid-2 section">
-    <div></div>
-    <div>
-      <div class="section-title">Currently Out of Office</div>
-      <div class="ooo-list" id="oooList"></div>
-    </div>
-  </div>
-
   <!-- Top Orgs -->
   <div class="section">
     <div class="section-title">Top Organizations</div>
@@ -737,21 +728,6 @@ function renderRoles() {
 
 
 // ========== OOO ==========
-function renderOOO() {
-  const ooo = DATA.filter(d => d.ooo);
-  const el = document.getElementById('oooList');
-  if (!ooo.length) { el.innerHTML = '<div style="color:var(--text-dim);font-size:13px">No one currently OOO</div>'; return; }
-  el.innerHTML = ooo.map(d => `
-    <div class="ooo-item">
-      <div>
-        <strong>${d.name}</strong>
-        <span style="color:var(--text-dim);margin-left:8px;font-size:12px">${d.affiliation}</span>
-      </div>
-      <div class="ooo-date">${d.ooo}</div>
-    </div>
-  `).join('');
-}
-
 // ========== ORG CHART ==========
 function renderOrgs() {
   const orgs = {};
@@ -860,7 +836,7 @@ renderCards();
 renderPipeline();
 renderBioTracker();
 renderRoles();
-renderOOO();
+
 renderOrgs();
 renderControls();
 renderTable();
