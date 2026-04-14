@@ -628,7 +628,7 @@ function roleClass(r) {
   if (r.includes('Keynote')) return 'keynote';
   if (r === 'Speaker + Judge') return 'both';
   if (r === 'Speaker') return 'speaker';
-  if (r === 'Judge + Mentor') return 'judge';
+  // Judge + Mentor removed: all judges are mentors
   return 'judge';
 }
 
@@ -704,7 +704,7 @@ function renderBioTracker() {
 
 // ========== ROLE BREAKDOWN ==========
 function renderRoles() {
-  const roles = ['Keynote Speaker','Speaker','Speaker + Judge','Judge','Judge + Mentor'];
+  const roles = ['Keynote Speaker','Speaker','Speaker + Judge','Judge'];
   const el = document.getElementById('roleGrid');
   el.innerHTML = roles.map(r => {
     const items = DATA.filter(d => d.role === r);
