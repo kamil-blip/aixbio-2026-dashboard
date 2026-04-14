@@ -410,6 +410,50 @@
     z-index: 10;
   }
 
+  /* Partner cards */
+  .partner-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .partner-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .partner-card .p-role {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .partner-card .p-name a {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .partner-card .p-name a:hover { color: var(--accent); text-decoration: underline; }
+  .partner-card .p-contact { font-size: 12px; color: var(--text-dim); }
+  .partner-card .p-detail { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+  /* Venue cards */
+  .venue-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .venue-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+  }
+  .venue-card .v-city { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+  .venue-card .v-venue { font-size: 13px; color: var(--text-dim); }
+  .venue-card .v-status { font-size: 11px; color: var(--green); margin-top: 4px; }
+
+  /* Org link in table */
+  .affil-link { color: var(--blue); text-decoration: none; }
+  .affil-link:hover { text-decoration: underline; }
+
   @media (max-width: 768px) {
     .header, .container { padding-left: 16px; padding-right: 16px; }
     .cards { grid-template-columns: repeat(2, 1fr); }
@@ -426,7 +470,7 @@
       <h1><span>AIxBio</span> 2026 Judges & Speakers</h1>
       <div class="header-sub">Recruitment pipeline tracker &middot; Updated Apr 14, 2026</div>
     </div>
-    <div class="countdown">T-12 days to hackathon</div>
+    <div class="countdown">T-11 days to hackathon</div>
   </div>
 </div>
 
@@ -445,6 +489,18 @@
       <div class="section-title">Headshot & Bio Collection</div>
       <div class="bio-tracker" id="bioTracker"></div>
     </div>
+  </div>
+
+  <!-- Partners & Sponsors -->
+  <div class="section">
+    <div class="section-title">Partners & Sponsors</div>
+    <div class="partner-grid" id="partnerGrid"></div>
+  </div>
+
+  <!-- Venues -->
+  <div class="section">
+    <div class="section-title">In-Person Hubs</div>
+    <div class="venue-grid" id="venueGrid"></div>
   </div>
 
   <!-- Role Breakdown -->
@@ -751,7 +807,7 @@ function renderOrgs() {
     const w = (n) => (n/max*100) + '%';
     return `
       <div class="org-row">
-        <div class="org-name" title="${org}">${org}</div>
+        <div class="org-name" title="${org}">${ORG_URLS[org] ? `<a class="affil-link" href="${ORG_URLS[org]}" target="_blank" rel="noopener">${org}</a>` : org}</div>
         <div class="org-bar-wrap">
           ${c.confirmed ? `<div class="org-bar-seg confirmed" style="width:${w(c.confirmed)}" title="${c.confirmed} confirmed"></div>` : ''}
           ${c.interested ? `<div class="org-bar-seg interested" style="width:${w(c.interested)}" title="${c.interested} interested"></div>` : ''}
@@ -824,7 +880,7 @@ function renderTable() {
   document.getElementById('tableBody').innerHTML = filtered.map(d => `
     <tr>
       <td class="name-cell">${d.name}</td>
-      <td class="affil-cell" title="${d.affiliation}">${d.affiliation || '<span style="opacity:0.3">-</span>'}</td>
+      <td class="affil-cell" title="${d.affiliation}">${d.affiliation ? (orgUrl(d.affiliation) ? `<a class="affil-link" href="${orgUrl(d.affiliation)}" target="_blank" rel="noopener">${d.affiliation}</a>` : d.affiliation) : '<span style="opacity:0.3">-</span>'}</td>
       <td><span class="badge-role ${roleClass(d.role)}">${d.role}</span></td>
       <td><span class="badge badge-${statusClass(d.status)}">${d.status}</span></td>
       <td style="font-size:12px;color:var(--text-dim)">${d.contactedBy || '-'}</td>
@@ -835,10 +891,111 @@ function renderTable() {
   document.getElementById('tableFooter').textContent = `Showing ${filtered.length} of ${DATA.length} contacts`;
 }
 
+// ========== ORG URL MAP ==========
+const ORG_URLS = {
+  "SecureBio": "https://securebio.org",
+  "BlueDot Impact": "https://bluedot.org",
+  "BlueDot": "https://bluedot.org",
+  "Foresight Institute": "https://foresight.org",
+  "Foresight": "https://foresight.org",
+  "CBAI": "https://cbai.bio",
+  "Sentinel Bio": "https://sentinelbio.org",
+  "Fourth Eon Bio": "https://fourtheon.bio",
+  "Measuring AI Progress": "https://measuringaiprogress.org",
+  "CLTR": "https://longtermresilience.org",
+  "Centre for Long-Term Resilience": "https://longtermresilience.org",
+  "IBBIS": "https://ibbis.bio",
+  "RAND": "https://rand.org",
+  "RAND Europe": "https://randeurope.org",
+  "RAND-CAST": "https://rand.org",
+  "NTI": "https://nti.org",
+  "Nuclear Threat Initiative": "https://nti.org",
+  "NTI | bio": "https://nti.org",
+  "Aclid": "https://aclid.bio",
+  "SecureDNA": "https://securedna.org",
+  "SecureDNA Foundation": "https://securedna.org",
+  "Council on Strategic Risks": "https://councilonstrategicrisks.org",
+  "Coefficient Giving": "https://coefficientgiving.org",
+  "Blueprint Biosecurity": "https://blueprintbiosecurity.org",
+  "Serova Bio": "https://serovabio.com",
+  "Gryphon Scientific": "https://gryphonscientific.com",
+  "Georgetown GHSS": "https://ghss.georgetown.edu",
+  "UC Berkeley": "https://berkeley.edu",
+  "Oxford": "https://ox.ac.uk",
+  "Oxford Institute for Ethics in AI": "https://www.oxford-aiethics.ox.ac.uk",
+  "Stanford": "https://stanford.edu",
+  "MIT Media Lab": "https://media.mit.edu",
+  "JHU CHS": "https://centerforhealthsecurity.org",
+  "JHU Center for Health Security": "https://centerforhealthsecurity.org",
+  "Center for Health Security": "https://centerforhealthsecurity.org",
+  "Johns Hopkins Center for Health Security": "https://centerforhealthsecurity.org",
+  "Nemesys Insights": "https://nemesysinsights.com",
+  "Duke University": "https://duke.edu",
+  "AI Safety Asia": "https://aisafetyasia.org",
+  "UK AI Safety Institute": "https://aisi.gov.uk",
+  "Cambridge Biosecurity Hub": "https://cambridgebiosecurity.org",
+  "Francis Crick Institute": "https://crick.ac.uk",
+  "Deloitte": "https://deloitte.com",
+  "CSR": "https://councilonstrategicrisks.org",
+  "CSR / Nolan Center": "https://councilonstrategicrisks.org",
+  "GenApex Bio": "https://genapex.com",
+  "UVA School of Data Science": "https://datascience.virginia.edu",
+};
+function orgUrl(affil) {
+  if (!affil) return '';
+  // Try exact match first
+  if (ORG_URLS[affil]) return ORG_URLS[affil];
+  // Try first segment (before ;)
+  const first = affil.split(';')[0].split('/')[0].trim();
+  if (ORG_URLS[first]) return ORG_URLS[first];
+  return '';
+}
+
+// ========== PARTNERS & SPONSORS ==========
+const PARTNERS = [
+  {name:"BlueDot Impact", role:"Co-organizer", url:"https://bluedot.org", contact:"", detail:"Cambridge Biosecurity track co-organizer"},
+  {name:"Cambridge Biosecurity Hub", role:"Co-organizer", url:"https://cambridgebiosecurity.org", contact:"", detail:"Cambridge/Boston hub coordination"},
+  {name:"CBAI", role:"Sponsor ($3K)", url:"https://cbai.bio", contact:"", detail:"Track 1: DNA Screening & Synthesis Controls. $1K prizes + $2K outreach"},
+  {name:"Measuring AI Progress", role:"Sponsor ($3K)", url:"https://measuringaiprogress.org", contact:"", detail:"Track 2: Pandemic Early Warning. $1K prizes + $2K outreach"},
+  {name:"Fourth Eon Bio", role:"Sponsor ($3K)", url:"https://fourtheon.bio", contact:"Gabe Clark (gabe@fourtheon.bio)", detail:"Track 3: AI Biosecurity Tools. $1K prizes + $2K outreach"},
+  {name:"Sentinel Bio", role:"Sponsor ($3K)", url:"https://sentinelbio.org", contact:"", detail:"Track 4: Benchtop Synthesis Security. $1K prizes + $2K outreach"},
+  {name:"SecureBio", role:"Partner", url:"https://securebio.org", contact:"", detail:"Boston venue host, multiple judges/speakers"},
+  {name:"Foresight Institute", role:"Venue Host", url:"https://foresight.org", contact:"Cynthia Boedihardjo", detail:"SF venue (The Fold) + Berlin Node. $1K contribution"},
+];
+function renderPartners() {
+  document.getElementById('partnerGrid').innerHTML = PARTNERS.map(p => `
+    <div class="partner-card">
+      <div class="p-role">${p.role}</div>
+      <div class="p-name"><a href="${p.url}" target="_blank" rel="noopener">${p.name}</a></div>
+      ${p.contact ? `<div class="p-contact">${p.contact}</div>` : ''}
+      <div class="p-detail">${p.detail}</div>
+    </div>
+  `).join('');
+}
+
+// ========== VENUES ==========
+const VENUES = [
+  {city:"San Francisco", venue:"The Fold (Foresight SF Node)", status:"Confirmed", luma:"https://lu.ma/aixbio-hackathon-2026-sf"},
+  {city:"Berlin", venue:"Foresight Institute Berlin Node", status:"Confirmed", luma:"https://lu.ma/aixbio-hackathon-2026-berlin"},
+  {city:"Cambridge/Boston", venue:"TBD (CBAI + SecureBio area)", status:"Confirmed", luma:""},
+  {city:"London", venue:"TBD", status:"Confirmed", luma:""},
+];
+function renderVenues() {
+  document.getElementById('venueGrid').innerHTML = VENUES.map(v => `
+    <div class="venue-card">
+      <div class="v-city">${v.city}</div>
+      <div class="v-venue">${v.venue}</div>
+      ${v.luma ? `<div class="v-status"><a href="${v.luma}" target="_blank" rel="noopener" style="color:var(--green);text-decoration:none">Luma page &rarr;</a></div>` : `<div class="v-status">Confirmed</div>`}
+    </div>
+  `).join('');
+}
+
 // ========== INIT ==========
 renderCards();
 renderPipeline();
 renderBioTracker();
+renderPartners();
+renderVenues();
 renderRoles();
 
 renderOrgs();
