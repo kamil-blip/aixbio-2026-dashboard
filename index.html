@@ -898,10 +898,10 @@ const ORG_URLS = {
   "BlueDot": "https://bluedot.org",
   "Foresight Institute": "https://foresight.org",
   "Foresight": "https://foresight.org",
-  "CBAI": "https://cbai.bio",
+  "CBAI": "https://cbai.ai",
   "Sentinel Bio": "https://sentinelbio.org",
   "Fourth Eon Bio": "https://fourtheon.bio",
-  "Measuring AI Progress": "https://measuringaiprogress.org",
+  "Measuring AI Progress": "https://equistamp.com",
   "CLTR": "https://longtermresilience.org",
   "Centre for Long-Term Resilience": "https://longtermresilience.org",
   "IBBIS": "https://ibbis.bio",
@@ -933,12 +933,22 @@ const ORG_URLS = {
   "Duke University": "https://duke.edu",
   "AI Safety Asia": "https://aisafetyasia.org",
   "UK AI Safety Institute": "https://aisi.gov.uk",
-  "Cambridge Biosecurity Hub": "https://cambridgebiosecurity.org",
+  "Cambridge Biosecurity Hub": "https://cambiohub.org",
+  "Cambio": "https://cambiohub.org",
   "Francis Crick Institute": "https://crick.ac.uk",
   "Deloitte": "https://deloitte.com",
   "CSR": "https://councilonstrategicrisks.org",
   "CSR / Nolan Center": "https://councilonstrategicrisks.org",
   "GenApex Bio": "https://genapex.com",
+  "Equistamp": "https://equistamp.com",
+  "Impact Ops": "https://impact-ops.org",
+  "Battelle": "https://battelle.org",
+  "KCL": "https://kcl.ac.uk",
+  "Rutgers": "https://rutgers.edu",
+  "Columbia": "https://columbia.edu",
+  "Northeastern University": "https://northeastern.edu",
+  "Pivotal Research": "https://pivotal-research.org",
+  "The Fold": "https://thefoldsf.com",
   "UVA School of Data Science": "https://datascience.virginia.edu",
 };
 function orgUrl(affil) {
@@ -953,14 +963,14 @@ function orgUrl(affil) {
 
 // ========== PARTNERS & SPONSORS ==========
 const PARTNERS = [
-  {name:"BlueDot Impact", role:"Co-organizer", url:"https://bluedot.org", contact:"", detail:"Cambridge Biosecurity track co-organizer"},
-  {name:"Cambridge Biosecurity Hub", role:"Co-organizer", url:"https://cambridgebiosecurity.org", contact:"", detail:"Cambridge/Boston hub coordination"},
-  {name:"CBAI", role:"Sponsor ($3K)", url:"https://cbai.bio", contact:"", detail:"Track 1: DNA Screening & Synthesis Controls. $1K prizes + $2K outreach"},
-  {name:"Measuring AI Progress", role:"Sponsor ($3K)", url:"https://measuringaiprogress.org", contact:"", detail:"Track 2: Pandemic Early Warning. $1K prizes + $2K outreach"},
-  {name:"Fourth Eon Bio", role:"Sponsor ($3K)", url:"https://fourtheon.bio", contact:"Gabe Clark (gabe@fourtheon.bio)", detail:"Track 3: AI Biosecurity Tools. $1K prizes + $2K outreach"},
-  {name:"Sentinel Bio", role:"Sponsor ($3K)", url:"https://sentinelbio.org", contact:"", detail:"Track 4: Benchtop Synthesis Security. $1K prizes + $2K outreach"},
-  {name:"SecureBio", role:"Partner", url:"https://securebio.org", contact:"", detail:"Boston venue host, multiple judges/speakers"},
-  {name:"Foresight Institute", role:"Venue Host", url:"https://foresight.org", contact:"Cynthia Boedihardjo", detail:"SF venue (The Fold) + Berlin Node. $1K contribution"},
+  {name:"BlueDot Impact", role:"Co-organizer", url:"https://bluedot.org", contact:"Joshua Landes (joshua@bluedot.org)", detail:"Cambridge Biosecurity track co-organizer"},
+  {name:"Cambridge Biosecurity Hub (Cambio)", role:"Co-organizer", url:"https://cambiohub.org", contact:"Grace Braithwaite (grace@cambiohub.org)", detail:"Co-Founder and Director. Handles speaker/judge lineup for Cambridge hub"},
+  {name:"CBAI", role:"Sponsor ($3K)", url:"https://cbai.ai", contact:"Emre Yavuz (emre@cbai.ai), Maite Abadia-Manthei (maite@cbai.ai)", detail:"Track 1: DNA Screening & Synthesis Controls. $1K prizes + $2K outreach"},
+  {name:"Measuring AI Progress (Equistamp)", role:"Sponsor ($3K)", url:"https://equistamp.com", contact:"Christopher Canal (chris@equistamp.com), Eric Byram (eric@impact-ops.org)", detail:"Track 2: Pandemic Early Warning. $1K prizes + $2K outreach. Payment via Impact Ops"},
+  {name:"Fourth Eon Bio", role:"Sponsor ($3K)", url:"https://fourtheon.bio", contact:"Gary Abel (gary@fourtheon.bio), payment: accounting@fourtheon.bio", detail:"Track 3: AI Biosecurity Tools. $1K prizes + $2K outreach"},
+  {name:"Sentinel Bio", role:"Sponsor ($3K)", url:"https://sentinelbio.org", contact:"Janika Schmitt (janika@sentinelbio.org)", detail:"Track 4: Benchtop Synthesis Security. $1K prizes + $2K outreach. Jonas Sandbrink (EIR, speaker)"},
+  {name:"SecureBio", role:"Partner", url:"https://securebio.org", contact:"Eleanor Marshall (eleanor@securebio.org)", detail:"Boston venue interest. Multiple judges/speakers (Evan Fields, Nelly Mak, Jasper Goetting, Coleman Breen)"},
+  {name:"Foresight Institute", role:"Venue Host", url:"https://foresight.org", contact:"Rachel Farley (rachel@foresight.org), Cynthia Boedihardjo (cyn@thefoldsf.com)", detail:"SF venue (The Fold) + Berlin Node (Bradley Clark Royes). $1K contribution"},
 ];
 function renderPartners() {
   document.getElementById('partnerGrid').innerHTML = PARTNERS.map(p => `
@@ -975,16 +985,17 @@ function renderPartners() {
 
 // ========== VENUES ==========
 const VENUES = [
-  {city:"San Francisco", venue:"The Fold (Foresight SF Node)", status:"Confirmed", luma:"https://lu.ma/aixbio-hackathon-2026-sf"},
-  {city:"Berlin", venue:"Foresight Institute Berlin Node", status:"Confirmed", luma:"https://lu.ma/aixbio-hackathon-2026-berlin"},
-  {city:"Cambridge/Boston", venue:"TBD (CBAI + SecureBio area)", status:"Confirmed", luma:""},
-  {city:"London", venue:"TBD", status:"Confirmed", luma:""},
+  {city:"San Francisco", venue:"The Fold, 3359 26th St, SF 94110", status:"Confirmed", luma:"https://lu.ma/aixbio-hackathon-2026-sf", contacts:"Rachel Farley, Cynthia Boedihardjo, Akshay Iyer, Finn"},
+  {city:"Berlin", venue:"Foresight Institute Berlin Node", status:"Confirmed", luma:"https://lu.ma/aixbio-hackathon-2026-berlin", contacts:"Bradley Clark Royes, Jack Burgess (volunteer)"},
+  {city:"Cambridge/Boston", venue:"TBD (CBAI + SecureBio, Harvard Square area)", status:"Confirmed", luma:"", contacts:"Emre Yavuz (CBAI), Eleanor Marshall (SecureBio)"},
+  {city:"London", venue:"TBD", status:"Confirmed", luma:"", contacts:"TBD"},
 ];
 function renderVenues() {
   document.getElementById('venueGrid').innerHTML = VENUES.map(v => `
     <div class="venue-card">
       <div class="v-city">${v.city}</div>
       <div class="v-venue">${v.venue}</div>
+      ${v.contacts ? `<div style="font-size:12px;color:var(--text-dim);margin-top:4px">${v.contacts}</div>` : ''}
       ${v.luma ? `<div class="v-status"><a href="${v.luma}" target="_blank" rel="noopener" style="color:var(--green);text-decoration:none">Luma page &rarr;</a></div>` : `<div class="v-status">Confirmed</div>`}
     </div>
   `).join('');
