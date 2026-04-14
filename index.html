@@ -769,7 +769,7 @@ let sortDir = 1;
 
 function renderControls() {
   const statuses = ['All','Confirmed','Interested','No Reply','Declined'];
-  const roles = ['All','Keynote Speaker','Speaker','Speaker + Judge','Judge','Judge + Mentor'];
+  const roles = ['All','Keynote Speaker','Speaker','Speaker + Judge','Judge'];
   document.getElementById('controls').innerHTML = `
     <input class="search-input" placeholder="Search by name or organization..." oninput="searchQuery=this.value;renderTable()">
     <div style="display:flex;gap:6px;flex-wrap:wrap">
