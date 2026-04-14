@@ -509,7 +509,7 @@ const DATA = [
   {name:"Zuzanna Matuszewska",affiliation:"",role:"Judge",status:"Confirmed",contactedBy:"Grace",bio:true,ooo:""},
   {name:"Stephen Turner",affiliation:"University of Virginia School of Data Science",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
   {name:"Andrew Liu",affiliation:"SecureBio; MIT",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
-  {name:"Elian Belot",affiliation:"Serova Bio",role:"Judge + Mentor",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
+  {name:"Elian Belot",affiliation:"Serova Bio",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
   {name:"Gary Ackerman",affiliation:"Nemesys Insights / Frontier Design Group",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
   {name:"J.T. O'Brien",affiliation:"Bipartisan Commission on Biodefense; University of Oxford",role:"Judge",status:"Confirmed",contactedBy:"Kamil",bio:true,ooo:""},
   {name:"Jack Burgess",affiliation:"Berlin Hub Volunteer",role:"Judge",status:"Confirmed",contactedBy:"Jaime",bio:true,ooo:""},
@@ -628,7 +628,7 @@ function roleClass(r) {
   if (r.includes('Keynote')) return 'keynote';
   if (r === 'Speaker + Judge') return 'both';
   if (r === 'Speaker') return 'speaker';
-  if (r === 'Judge + Mentor') return 'both';
+  if (r === 'Judge + Mentor') return 'judge';
   return 'judge';
 }
 
