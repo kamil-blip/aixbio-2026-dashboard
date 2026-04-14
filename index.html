@@ -447,6 +447,12 @@
     </div>
   </div>
 
+  <!-- In-Person Hubs -->
+  <div class="section">
+    <div class="section-title">In-Person Hubs</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px" id="hubGrid"></div>
+  </div>
+
   <!-- Role Breakdown -->
   <div class="section">
     <div class="section-title">By Role</div>
@@ -834,6 +840,21 @@ function renderTable() {
 
   document.getElementById('tableFooter').textContent = `Showing ${filtered.length} of ${DATA.length} contacts`;
 }
+
+// ========== HUBS ==========
+const HUBS = [
+  {city:"San Francisco",venue:"The Fold",luma:"https://lu.ma/aixbio-hackathon-2026-sf"},
+  {city:"Berlin",venue:"Foresight Berlin Node",luma:"https://lu.ma/aixbio-hackathon-2026-berlin"},
+  {city:"Cambridge/Boston",venue:"TBD",luma:""},
+  {city:"London",venue:"TBD",luma:""},
+];
+document.getElementById('hubGrid').innerHTML = HUBS.map(h => `
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px">
+    <div style="font-weight:600;font-size:15px">${h.city}</div>
+    <div style="font-size:13px;color:var(--text-dim)">${h.venue}</div>
+    ${h.luma ? `<a href="${h.luma}" target="_blank" rel="noopener" style="font-size:12px;color:var(--green);text-decoration:none">Luma &rarr;</a>` : '<span style="font-size:12px;color:var(--green)">Confirmed</span>'}
+  </div>
+`).join('');
 
 // ========== INIT ==========
 renderCards();
